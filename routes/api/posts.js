@@ -151,6 +151,7 @@ router.delete(
       Post.findOne({ _id: req.params.id })
         .then(post => {
           if (
+            // Check if comment exists
             post.comments.filter(
               comment => comment._id.toString() === req.params.comment_id
             ).length === 0
@@ -160,10 +161,12 @@ router.delete(
               .json({ commentdoesnotexit: "Comment does not exit" });
           }
 
+          // Index of comment to delete
           const removeId = post.comments
             .map(comment => comment._id.toString())
             .indexOf(req.params.comment_id);
 
+          // Check if comment belongs to user
           if (post.comments[removeId].user.toString() != req.user.id)
             return res
               .status(401)
