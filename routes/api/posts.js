@@ -5,6 +5,8 @@ const router = express.Router();
 const Post = require("./../../models/Post");
 const postValidator = require("./../../validation/post");
 
+// @TODO Update a post
+
 // @route   POST api/posts
 // @desc    Creates a post
 // @access  Protected
@@ -66,6 +68,38 @@ router.delete(
           }
 
           post.delete().then(() => res.json({ success: true }));
+        })
+        .catch(err => res.status(400).json(err));
+    });
+  }
+);
+
+// @route   POST api/posts/:id/like
+// @desc    Like a post or unlike if already liked
+// @access  Protected
+router.post(
+  "/:id/like",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Profile.findOne({ id: req.user.id }).then(profile => {
+      Post.findOne({ _id: req.params.id })
+        .then(post => {
+          if (
+            post.likes.filter(like => like.user.toString() === req.user.id)
+              .length > 0
+          ) {
+            const removeId = post.likes
+              .map(like => like.user.toString())
+              .indexOf(req.user.id);
+
+            post.likes.splice(removeId, 1);
+          } else {
+            post.likes.unshift({ user: req.user.id });
+          }
+          post
+            .save()
+            .then(post => res.json(post))
+            .catch(err => res.status(400).json(err));
         })
         .catch(err => res.status(400).json(err));
     });
