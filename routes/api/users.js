@@ -101,7 +101,7 @@ router.post("/login", (req, res) => {
 
 // @route   GET api/users/register
 // @desc    Currently logged in user
-// @access  Public
+// @access  Protected
 router.get(
   "/current",
   passport.authenticate("jwt", { session: false }),
