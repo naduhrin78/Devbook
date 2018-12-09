@@ -6,6 +6,7 @@ const router = express.Router();
 const User = require("./../../models/User");
 const Profile = require("./../../models/Profile");
 const profileValidator = require("./../../validation/profile");
+const experienceValidator = require("./../../validation/experience");
 
 // @route   GET api/profiles
 // @desc    Get profile of current user
@@ -30,7 +31,7 @@ router.get(
 );
 
 // @route   POST api/profiles
-// @desc    Creates or updates a user profile
+// @desc    Creates or updates a user's profile
 // @access  Protected
 router.post(
   "/",
@@ -82,5 +83,84 @@ router.post(
     });
   }
 );
+
+// @route   POST api/profiles/experience
+// @desc    Creates or updates a user's experience
+// @access  Protected
+router.post(
+  "/experience",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    const { errors, isValid } = experienceValidator(req.body);
+
+    if (!isValid) return res.status(400).json(errors);
+
+    Profile.findOne({ user: req.user.id })
+      .then(profile => {
+        const experience = {
+          title: req.body.title,
+          company: req.body.company,
+          location: req.body.location,
+          from: req.body.from,
+          to: req.body.to,
+          current: req.body.current,
+          description: req.body.description
+        };
+
+        profile.experience.unshift(experience);
+
+        profile.save().then(profile => res.json(profile));
+      })
+      .catch(err => res.status(400).json(err));
+  }
+);
+
+// @route   GET api/profiles/handle/:handle
+// @desc    Gets a profile based on handle
+// @access  Public
+router.get("/handle/:handle", (req, res) => {
+  let errors = {};
+  Profile.findOne({ handle: req.params.handle })
+    .populate("user", ["name", "avatar"])
+    .then(profile => {
+      if (!profile) {
+        errors.profile = "Profile doesnt exist for given handle";
+        return res.status(400).json(errors);
+      }
+      return res.json(profile);
+    });
+});
+
+// @route   GET api/profiles/user/:userId
+// @desc    Gets a profile based on userId
+// @access  Public
+router.get("/user/:id", (req, res) => {
+  let errors = {};
+  Profile.findOne({ user: req.params.id })
+    .populate("user", ["name", "avatar"])
+    .then(profile => {
+      if (!profile) {
+        errors.profile = "Profile doesnt exist for given userId";
+        return res.status(400).json(errors);
+      }
+      return res.json(profile);
+    });
+});
+
+// @route   GET api/profiles/all
+// @desc    Gets all the profiles
+// @access  Public
+router.get("/all", (req, res) => {
+  let errors = {};
+  Profile.find()
+    .populate("user", ["name", "avatar"])
+    .then(profiles => {
+      if (!profiles) {
+        errors.profiles = "There are no profiles";
+        return res.status(400).json(errors);
+      }
+      return res.json(profiles);
+    });
+});
 
 module.exports = router;
