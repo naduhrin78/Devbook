@@ -17,7 +17,7 @@ const router = express.Router();
 router.post("/register", (req, res) => {
   const { errors, isValid } = register(req.body);
 
-  if (!isValid) return res.status(404).json(errors);
+  if (!isValid) return res.status(400).json(errors);
 
   //Check if user already exists
   User.findOne({ email: req.body.email }).then(user => {

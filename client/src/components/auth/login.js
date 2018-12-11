@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import axios from "axios";
+import classnames from "classnames";
 
 class Login extends Component {
   constructor() {
@@ -23,14 +25,19 @@ class Login extends Component {
 
     const user = {
       email: this.state.email,
-      password: this.state.password,
+      password1: this.state.password1,
       errors: this.state.errors
     };
 
-    console.log(user);
+    axios
+      .post("/api/users/login", user)
+      .then(res => console.log(res.data))
+      .catch(err => this.setState({ errors: err.response.data }));
   }
 
   render() {
+    const { errors } = this.state;
+    console.log(errors);
     return (
       <div className="login">
         <div className="container">
@@ -46,20 +53,32 @@ class Login extends Component {
                     type="email"
                     value={this.state.email}
                     onChange={this.onChange}
-                    className="form-control form-control-lg"
+                    className={classnames("form-control form-control-lg", {
+                      "is-invalid": errors.email
+                    })}
                     placeholder="Email Address"
                     name="email"
                   />
+
+                  {errors.email && (
+                    <div className="invalid-feedback">{errors.email}</div>
+                  )}
                 </div>
                 <div className="form-group">
                   <input
                     type="password"
-                    value={this.state.password}
+                    value={this.state.password1}
                     onChange={this.onChange}
-                    className="form-control form-control-lg"
-                    placeholder="Password"
-                    name="password"
+                    className={classnames("form-control form-control-lg", {
+                      "is-invalid": errors.password1
+                    })}
+                    placeholder="password"
+                    name="password1"
                   />
+
+                  {errors.password1 && (
+                    <div className="invalid-feedback">{errors.password1}</div>
+                  )}
                 </div>
                 <input type="submit" className="btn btn-info btn-block mt-4" />
               </form>
