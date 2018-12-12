@@ -11,14 +11,24 @@ import Footer from "./components/layout/footer";
 import Register from "./components/auth/register";
 import Login from "./components/auth/login";
 import setAuthToken from "./utility/setAuthToken";
-import { setCurrentUser } from "./actions/authActions";
+import { setCurrentUser, logoutUser } from "./actions/authActions";
 
 if (localStorage.jwtToken) {
+  //alert("yolo");
   // Configure token to be required for any protected route access
   setAuthToken(localStorage.jwtToken);
 
+  const decoded = jwt_decode(localStorage.jwtToken);
+
   // Dispatch login user
-  store.dispatch(setCurrentUser(jwt_decode(localStorage.jwtToken)));
+  store.dispatch(setCurrentUser(decoded));
+
+  if (jwt_decode(localStorage.jwtToken).exp < Date.now() / 1000) {
+    store.dispatch(logoutUser());
+
+    // eslint-disable-next-line anchor-is-valid
+    window.location.href = "/login";
+  }
 }
 
 class App extends Component {
