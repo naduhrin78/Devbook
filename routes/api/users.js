@@ -57,7 +57,7 @@ router.post("/register", (req, res) => {
   });
 });
 
-// @route   POST api/users/register
+// @route   POST api/users/login
 // @desc    Logs in a user
 // @access  Public
 router.post("/login", (req, res) => {
@@ -66,7 +66,7 @@ router.post("/login", (req, res) => {
   if (!isValid) return res.status(400).json(errors);
 
   const email = req.body.email;
-  const password = req.body.password;
+  const password = req.body.password1;
 
   // Check if user exists for given mail
   User.findOne({ email }).then(user => {
@@ -99,7 +99,7 @@ router.post("/login", (req, res) => {
   });
 });
 
-// @route   GET api/users/register
+// @route   GET api/users/current
 // @desc    Currently logged in user
 // @access  Protected
 router.get(

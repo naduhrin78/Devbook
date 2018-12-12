@@ -5,7 +5,7 @@ module.exports = data => {
   let errors = {};
 
   const email = isEmpty(data.email) ? "" : data.email;
-  const password = isEmpty(data.password) ? "" : data.password;
+  const password = isEmpty(data.password1) ? "" : data.password1;
 
   if (!validator.isEmail(email)) errors.email = "Invalid email";
 
