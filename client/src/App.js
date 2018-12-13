@@ -10,8 +10,11 @@ import Landing from "./components/layout/landing";
 import Footer from "./components/layout/footer";
 import Register from "./components/auth/register";
 import Login from "./components/auth/login";
+import Dashboard from "./components/dashboard/dashboard";
+
 import setAuthToken from "./utility/setAuthToken";
 import { setCurrentUser, logoutUser } from "./actions/authActions";
+import { clearCurrentProfile } from "./actions/profileActions";
 
 if (localStorage.jwtToken) {
   //alert("yolo");
@@ -25,6 +28,9 @@ if (localStorage.jwtToken) {
 
   if (jwt_decode(localStorage.jwtToken).exp < Date.now() / 1000) {
     store.dispatch(logoutUser());
+
+    // Clear user profile
+    store.dispatch(clearCurrentProfile());
 
     // eslint-disable-next-line anchor-is-valid
     window.location.href = "/login";
@@ -42,6 +48,7 @@ class App extends Component {
             <div className="container">
               <Route exact path="/register" component={Register} />
               <Route exact path="/login" component={Login} />
+              <Route exact path="/dashboard" component={Dashboard} />
             </div>
             <Footer />
           </div>
