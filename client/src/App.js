@@ -11,6 +11,7 @@ import Footer from "./components/layout/footer";
 import Register from "./components/auth/register";
 import Login from "./components/auth/login";
 import Dashboard from "./components/dashboard/dashboard";
+import PrivateRoute from "./components/common/PrivateRoute";
 
 import setAuthToken from "./utility/setAuthToken";
 import { setCurrentUser, logoutUser } from "./actions/authActions";
@@ -48,7 +49,7 @@ class App extends Component {
             <div className="container">
               <Route exact path="/register" component={Register} />
               <Route exact path="/login" component={Login} />
-              <Route exact path="/dashboard" component={Dashboard} />
+              <PrivateRoute exact path="/dashboard" component={Dashboard} />
             </div>
             <Footer />
           </div>
