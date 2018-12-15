@@ -68,7 +68,59 @@ class CreateProfile extends Component {
   }
 
   render() {
-    const { errors } = this.state;
+    const { errors, displaySocialInputs } = this.state;
+
+    let socialLinks;
+
+    if (displaySocialInputs)
+      socialLinks = (
+        <div>
+          <TextFieldGroup
+            site="twitter"
+            placeholder="Twitter Profile URL"
+            name="twitter"
+            errors={errors.twitter}
+            onChange={this.onChange}
+            value={this.state.twitter}
+          />
+
+          <TextFieldGroup
+            site="facebook"
+            placeholder="Facebook Profile URL"
+            name="facebook"
+            errors={errors.facebook}
+            onChange={this.onChange}
+            value={this.state.facebook}
+          />
+
+          <TextFieldGroup
+            site="linkedin"
+            placeholder="Linkedin Profile URL"
+            name="linkedin"
+            errors={errors.linkedin}
+            onChange={this.onChange}
+            value={this.state.linkedin}
+          />
+
+          <TextFieldGroup
+            site="youtube"
+            placeholder="Youtube Channel URL"
+            name="youtube"
+            errors={errors.youtube}
+            onChange={this.onChange}
+            value={this.state.youtube}
+          />
+
+          <TextFieldGroup
+            site="instagram"
+            placeholder="Instagram Page URL"
+            name="instagram"
+            errors={errors.instagram}
+            onChange={this.onChange}
+            value={this.state.instagram}
+          />
+        </div>
+      );
 
     const options = [
       { label: "* Select Professional Status", value: "0" },
@@ -178,57 +230,20 @@ class CreateProfile extends Component {
                 />
 
                 <div className="mb-3">
-                  <button type="button" className="btn btn-light">
+                  <button
+                    type="button"
+                    className="btn btn-light"
+                    onClick={() => {
+                      this.setState(prevState => ({
+                        displaySocialInputs: !prevState.displaySocialInputs
+                      }));
+                    }}
+                  >
                     Add Social Network Links
                   </button>
-                  <span className="text-muted">Optional</span>
+                  <span className="text-muted"> Optional</span>
                 </div>
-
-                <TextFieldGroup
-                  site="twitter"
-                  placeholder="Twitter Profile URL"
-                  name="twitter"
-                  errors={errors.twitter}
-                  onChange={this.onChange}
-                  value={this.state.twitter}
-                />
-
-                <TextFieldGroup
-                  site="facebook"
-                  placeholder="Facebook Profile URL"
-                  name="facebook"
-                  errors={errors.facebook}
-                  onChange={this.onChange}
-                  value={this.state.facebook}
-                />
-
-                <TextFieldGroup
-                  site="linkedin"
-                  placeholder="Linkedin Profile URL"
-                  name="linkedin"
-                  errors={errors.linkedin}
-                  onChange={this.onChange}
-                  value={this.state.linkedin}
-                />
-
-                <TextFieldGroup
-                  site="youtube"
-                  placeholder="Youtube Channel URL"
-                  name="youtube"
-                  errors={errors.youtube}
-                  onChange={this.onChange}
-                  value={this.state.youtube}
-                />
-
-                <TextFieldGroup
-                  site="instagram"
-                  placeholder="Instagram Page URL"
-                  name="instagram"
-                  errors={errors.instagram}
-                  onChange={this.onChange}
-                  value={this.state.instagram}
-                />
-
+                {socialLinks}
                 <input type="submit" className="btn btn-info btn-block mt-4" />
               </form>
             </div>
