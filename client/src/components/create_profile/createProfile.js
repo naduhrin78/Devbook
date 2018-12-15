@@ -108,7 +108,7 @@ class CreateProfile extends Component {
                 />
 
                 <SelectGroup
-                  value={this.state.handle}
+                  value={this.state.status}
                   onChange={this.onChange}
                   errors={errors.status}
                   name="status"
