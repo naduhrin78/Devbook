@@ -6,7 +6,6 @@ module.exports = data => {
 
   const handle = isEmpty(data.handle) ? "" : data.handle;
   const status = isEmpty(data.status) ? "" : data.status;
-  const skills = isEmpty(data.skills) ? "" : data.skills;
   const facebook = isEmpty(data.facebook) ? "" : data.facebook;
   const twitter = isEmpty(data.twitter) ? "" : data.twitter;
   const instagram = isEmpty(data.instagram) ? "" : data.instagram;
@@ -39,8 +38,6 @@ module.exports = data => {
   if (validator.isEmpty(handle)) errors.handle = "Handle field is required";
 
   if (validator.isEmpty(status)) errors.status = "Status field is required";
-
-  if (validator.isEmpty(skills)) errors.skills = "Skills field is required";
 
   return {
     errors,

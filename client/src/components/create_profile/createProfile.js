@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 
 import TextFieldGroup from "./../common/TextFieldGroup";
-import SocialNetworkLink from "./../common/SocialNetworkLink";
+import TextAreaGroup from "./../common/TextAreaGroup";
+import SelectGroup from "./../common/SelectGroup";
+import { createProfile } from "./../../actions/profileActions";
 
 class CreateProfile extends Component {
   constructor(props) {
@@ -37,7 +40,6 @@ class CreateProfile extends Component {
 
   onSubmit = e => {
     e.preventDefault();
-
     const profileData = {
       displaySocialInputs: false,
       handle: this.state.handle,
@@ -56,7 +58,7 @@ class CreateProfile extends Component {
       errors: {}
     };
 
-    console.log(this.state.handle);
+    this.props.createProfile(profileData, this.props.history);
   };
 
   componentWillReceiveProps(nextProps) {
@@ -68,19 +70,31 @@ class CreateProfile extends Component {
   render() {
     const { errors } = this.state;
 
+    const options = [
+      { label: "* Select Professional Status", value: "0" },
+      { label: "Developer", value: "Developer" },
+      { label: "Junior Developer", value: "Junior Developer" },
+      { label: "Senior Developer", value: "Senior Developer" },
+      { label: "Manager", value: "Manager" },
+      { label: "Student or Learning", value: "Student or Learning" },
+      { label: "Instructor", value: "Instructor" },
+      { label: "Intern", value: "Intern" },
+      { label: "Other", value: "Other" }
+    ];
+
     return (
-      <div class="create-profile">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-8 m-auto">
-              <a href="dashboard.html" class="btn btn-light">
+      <div className="create-profile">
+        <div className="container">
+          <div className="row">
+            <div className="col-md-8 m-auto">
+              <a href="dashboard.html" className="btn btn-light">
                 Go Back
               </a>
-              <h1 class="display-4 text-center">Create Your Profile</h1>
-              <p class="lead text-center">
+              <h1 className="display-4 text-center">Create Your Profile</h1>
+              <p className="lead text-center">
                 Let's get some information to make your profile stand out
               </p>
-              <small class="d-block pb-3">* = required field</small>
+              <small className="d-block pb-3">* = required field</small>
               <form onSubmit={this.onSubmit}>
                 <TextFieldGroup
                   type="text"
@@ -93,24 +107,14 @@ class CreateProfile extends Component {
                   company name, nickname, etc (This CAN'T be changed later)"
                 />
 
-                <div class="form-group">
-                  <select class="form-control form-control-lg" name="status">
-                    <option value="0">* Select Professional Status</option>
-                    <option value="Developer">Developer</option>
-                    <option value="Junior Developer">Junior Developer</option>
-                    <option value="Senior Developer">Senior Developer</option>
-                    <option value="Manager">Manager</option>
-                    <option value="Student or Learning">
-                      Student or Learning
-                    </option>
-                    <option value="Instructor">Instructor or Teacher</option>
-                    <option value="Intern">Intern</option>
-                    <option value="Other">Other</option>
-                  </select>
-                  <small class="form-text text-muted">
-                    Give us an idea of where you are at in your career
-                  </small>
-                </div>
+                <SelectGroup
+                  value={this.state.handle}
+                  onChange={this.onChange}
+                  errors={errors.status}
+                  name="status"
+                  info="Give us an idea of where you are at in your career"
+                  options={options}
+                />
 
                 <TextFieldGroup
                   type="text"
@@ -164,60 +168,68 @@ class CreateProfile extends Component {
                   your username"
                 />
 
-                <div class="form-group">
-                  <textarea
-                    class="form-control form-control-lg"
-                    placeholder="A short bio of yourself"
-                    name="bio"
-                  />
-                  <small class="form-text text-muted">
-                    Tell us a little about yourself
-                  </small>
-                </div>
+                <TextAreaGroup
+                  value={this.state.bio}
+                  onChange={this.onChange}
+                  errors={errors.bio}
+                  placeholder="A short bio of yourself"
+                  name="bio"
+                  info="Tell us a little about yourself"
+                />
 
-                <div class="mb-3">
-                  <button type="button" class="btn btn-light">
+                <div className="mb-3">
+                  <button type="button" className="btn btn-light">
                     Add Social Network Links
                   </button>
-                  <span class="text-muted">Optional</span>
+                  <span className="text-muted">Optional</span>
                 </div>
 
-                <SocialNetworkLink
+                <TextFieldGroup
                   site="twitter"
                   placeholder="Twitter Profile URL"
                   name="twitter"
+                  errors={errors.twitter}
+                  onChange={this.onChange}
                   value={this.state.twitter}
                 />
 
-                <SocialNetworkLink
+                <TextFieldGroup
                   site="facebook"
                   placeholder="Facebook Profile URL"
                   name="facebook"
+                  errors={errors.facebook}
+                  onChange={this.onChange}
                   value={this.state.facebook}
                 />
 
-                <SocialNetworkLink
+                <TextFieldGroup
                   site="linkedin"
                   placeholder="Linkedin Profile URL"
                   name="linkedin"
+                  errors={errors.linkedin}
+                  onChange={this.onChange}
                   value={this.state.linkedin}
                 />
 
-                <SocialNetworkLink
+                <TextFieldGroup
                   site="youtube"
                   placeholder="Youtube Channel URL"
                   name="youtube"
+                  errors={errors.youtube}
+                  onChange={this.onChange}
                   value={this.state.youtube}
                 />
 
-                <SocialNetworkLink
+                <TextFieldGroup
                   site="instagram"
                   placeholder="Instagram Page URL"
                   name="instagram"
+                  errors={errors.instagram}
+                  onChange={this.onChange}
                   value={this.state.instagram}
                 />
 
-                <input type="submit" class="btn btn-info btn-block mt-4" />
+                <input type="submit" className="btn btn-info btn-block mt-4" />
               </form>
             </div>
           </div>
@@ -229,7 +241,8 @@ class CreateProfile extends Component {
 
 CreateProfile.propTypes = {
   auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
+  errors: PropTypes.object.isRequired,
+  createProfile: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -237,4 +250,7 @@ const mapStateToProps = state => ({
   errors: state.errors
 });
 
-export default connect(mapStateToProps)(CreateProfile);
+export default connect(
+  mapStateToProps,
+  { createProfile }
+)(withRouter(CreateProfile));

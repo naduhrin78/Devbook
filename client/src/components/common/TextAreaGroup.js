@@ -2,30 +2,18 @@ import React from "react";
 import classnames from "classnames";
 import PropTypes from "prop-types";
 
-function TextFieldGroup({
+function TextAreaGroup({
   type,
   value,
   placeholder,
   name,
   onChange,
   errors,
-  info,
-  site
+  info
 }) {
-  let socialType = "fab fa-" + site;
-  let formClass = site ? "input-group mb-3" : "form-group";
-
   return (
-    <div className={formClass}>
-      {site && (
-        <div className="input-group-prepend">
-          <span className="input-group-text">
-            <i className={socialType} />
-          </span>
-        </div>
-      )}
-      <input
-        type={type}
+    <div className="form-group">
+      <textarea
         value={value}
         onChange={onChange}
         className={classnames("form-control form-control-lg", {
@@ -41,9 +29,7 @@ function TextFieldGroup({
   );
 }
 
-TextFieldGroup.proptypes = {
-  type: PropTypes.string.isRequired,
-  site: PropTypes.string,
+TextAreaGroup.proptypes = {
   value: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
@@ -52,8 +38,4 @@ TextFieldGroup.proptypes = {
   placeholder: PropTypes.string
 };
 
-TextFieldGroup.defaultProps = {
-  type: "text"
-};
-
-export default TextFieldGroup;
+export default TextAreaGroup;

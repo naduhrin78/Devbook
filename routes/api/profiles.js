@@ -26,7 +26,9 @@ router.get(
 
         return res.json(profile);
       })
-      .catch(err => res.status(400).json(err));
+      .catch(err => {
+        return res.status(400).json(err);
+      });
   }
 );
 
@@ -49,6 +51,7 @@ router.post(
     if (req.body.website) profileFields.website = req.body.website;
     if (req.body.location) profileFields.location = req.body.location;
     if (req.body.status) profileFields.status = req.body.status;
+    if (req.body.bio) profileFields.bio = req.body.bio;
     if (typeof req.body.skills !== "undefined")
       profileFields.skills = req.body.skills.split(",");
 
@@ -61,24 +64,32 @@ router.post(
     if (req.body.youtube) profileFields.social.youtube = req.body.youtube;
     if (req.body.linkedin) profileFields.social.linkedin = req.body.linkedin;
 
+    // Find profile for user
     Profile.findOne({ user: req.user.id }).then(profile => {
+      // Already exist
       if (profile) {
         Profile.findOneAndUpdate(
           { user: req.user.id },
           { $set: profileFields },
           { new: true }
         ).then(profile => res.json(profile));
-      } else {
-        Profile.findOne({ handle: req.user.handle })
+      }
+      // New profile
+      else {
+        Profile.findOne({ handle: req.body.handle })
           .then(profile => {
             if (profile) {
               errors.handle = "Handle already taken";
               return res.status(400).json(errors);
             }
+            new Profile(profileFields)
+              .save()
+              .then(profile => res.json(profile))
+              .catch(err => res.status(400).json(err));
           })
-          .catch(err => res.status(400).json(err));
-
-        new Profile(profileFields).save().then(profile => res.json(profile));
+          .catch(err => {
+            return res.status(400).json(err);
+          });
       }
     });
   }
